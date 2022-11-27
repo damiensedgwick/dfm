@@ -150,7 +150,7 @@
 
     li > input:checked {
         border: 1px solid #059669;
-        box-shadow: 0 0 10px #719ece;
+        box-shadow: 0 0 5px #059669;
     }
 
     hr {
