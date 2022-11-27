@@ -105,6 +105,7 @@
     section {
         height: 100vh;
         width: 100vw;
+        padding: 0 12px;
         display: flex;
         justify-content: center;
         align-items: center;
@@ -118,13 +119,26 @@
 
     div > div {
         display: flex;
+        flex-direction: column;
         align-items: center;
         justify-content: space-between;
     }
 
+    @media screen and (min-width: 768px) {
+        div > div {
+            flex-direction: row;
+        }
+    }
+
     h1 {
-        font-size: 2.5rem;
+        margin-bottom: 12px;
         font-weight: 300;
+    }
+
+    @media screen and (min-width: 768px) {
+        h1 {
+            margin-bottom: 0;
+        }
     }
 
     ul {
