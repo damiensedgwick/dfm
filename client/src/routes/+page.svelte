@@ -9,17 +9,17 @@
   ];
 </script>
 
-<Todos todos={todos} />
+<div class="container">
+  <Todos todos={todos} />
+</div>
 
 <style>
-    :global(*) {
-        margin: 0;
-        padding: 0;
-        box-sizing: border-box;
-    }
-
-
-    :global(body) {
-        background: #F8FAFC;
-    }
+  .container {
+      width: 100vw;
+      height: 100vh;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      background: #F8FAFC;
+  }
 </style>

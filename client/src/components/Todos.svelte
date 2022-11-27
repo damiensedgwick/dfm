@@ -3,8 +3,6 @@
   import Todo from "./Todo.svelte";
 
   export let todos;
-
-
 </script>
 
 <section>
@@ -21,6 +19,7 @@
 
 <style>
     section {
+        width: 100%;
         max-width: 960px;
         display: flex;
         flex-direction: column;
