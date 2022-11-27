@@ -1,6 +1,18 @@
 {
-	"extends": "./.svelte-kit/tsconfig.json",
 	"compilerOptions": {
+		"baseUrl": ".",
+		"paths": {
+			"$lib": [
+				"src/lib"
+			],
+			"$lib/*": [
+				"src/lib/*"
+			]
+		},
+		"rootDirs": [
+			".",
+			"./.svelte-kit/types"
+		],
 		"allowJs": true,
 		"checkJs": true,
 		"esModuleInterop": true,
@@ -8,10 +20,30 @@
 		"resolveJsonModule": true,
 		"skipLibCheck": true,
 		"sourceMap": true,
-		"strict": true
-	}
-	// Path aliases are handled by https://kit.svelte.dev/docs/configuration#alias
-	//
-	// If you want to overwrite includes/excludes, make sure to copy over the relevant includes/excludes
-	// from the referenced tsconfig.json - TypeScript does not merge them in
+		"strict": true,
+		"noImplicitAny": true,
+		"lib": [
+			"esnext",
+			"DOM"
+		],
+		"importsNotUsedAsValues": "error",
+		"isolatedModules": true,
+		"preserveValueImports": true,
+		"moduleResolution": "node",
+		"module": "esnext",
+		"target": "ESNext"
+	},
+	"include": [
+		"./.svelte-kit/ambient.d.ts",
+		"./src/**/*.js",
+		"./src/**/*.ts",
+		"./src/**/*.svelte",
+		"./src/**/*.js",
+		"./src/**/*.ts",
+		"./src/**/*.svelte"
+	],
+	"exclude": [
+		"node_modules",
+		"./.svelte-kit/[!ambient.d.ts]**"
+	]
 }
