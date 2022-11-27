@@ -2,6 +2,7 @@
   import { crossfade, fade } from "svelte/transition";
   import { flip } from "svelte/animate";
   import { cubicOut } from "svelte/easing";
+  import GoTrashcan from 'svelte-icons/go/GoTrashcan.svelte'
   import CreateTodoInput from "../components/CreateTodoInput.svelte";
 
   const [send, receive] = crossfade({
@@ -47,6 +48,10 @@
     }
   }
 
+  function archive(id) {
+    todos = todos.filter(todo => todo.id !== id);
+  }
+
   let createTodo = (todo) => {
     todos = [...todos, { id: todos.length + 1, ...todo }];
   };
@@ -64,6 +69,7 @@
         <li animate:flip={{duration: 500, easing: cubicOut}} in:receive={{key: todo.id}} out:send={{key: todo.id}}>
           <input type="checkbox" bind:checked={todo.completed} on:click={() => complete(todo.id)}>
           {todo.title}
+          <button class="icon" on:click={() => archive(todo.id)}><GoTrashcan /></button>
         </li>
       {/each}
     </ul>
@@ -75,6 +81,7 @@
         <li animate:flip={{duration: 500, easing: cubicOut }} in:receive={{key: todo.id}} out:send={{key: todo.id}}>
           <input type="checkbox" bind:checked={todo.completed} on:click={() => complete(todo.id)}>
           {todo.title}
+          <button class="icon" on:click={() => archive(todo.id)}><GoTrashcan /></button>
         </li>
       {/each}
     </ul>
@@ -89,7 +96,7 @@
     }
 
     :global(body) {
-        background: #F8FAFC;
+        background: #f1f5f9;
         font-family: -apple-system, BlinkMacSystemFont, Segoe UI, Helvetica, Arial, sans-serif, "Apple Color Emoji", "Segoe UI Emoji";
         font-weight: 300;
         font-size: 16px;
@@ -115,6 +122,11 @@
         justify-content: space-between;
     }
 
+    h1 {
+        font-size: 2.5rem;
+        font-weight: 300;
+    }
+
     ul {
         padding: 0;
         list-style: none;
@@ -133,11 +145,27 @@
     input {
         margin-right: 12px;
         cursor: pointer;
+        accent-color: #059669;
+    }
+
+    li > input:checked {
+        border: 1px solid #059669;
+        box-shadow: 0 0 10px #719ece;
     }
 
     hr {
         margin: 20px 0;
         border: 0;
-        border-bottom: 2px solid #E2E8F0;
+        border-bottom: 2px solid #cbd5e1;
+    }
+
+    .icon {
+        height: 16px;
+        width: 16px;
+        color: #dc2626;
+        margin-left: auto;
+        background: none;
+        border: none;
+        cursor: pointer;
     }
 </style>

@@ -31,4 +31,10 @@
         border-radius: 12px;
         box-shadow: 0 25px 50px -12px rgb(0 0 0 / 0.25);
     }
+
+    input:focus {
+        outline: none !important;
+        border: 1px solid #059669;
+        box-shadow: 0 0 10px #719ece;
+    }
 </style>
