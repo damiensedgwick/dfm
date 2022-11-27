@@ -2,13 +2,14 @@
   import GoTrashcan from 'svelte-icons/go/GoTrashcan.svelte'
 
   export let todo;
+  export let archiveTodoToggle;
 </script>
 
 <li>
   <input type="checkbox" bind:checked={todo.completed}>
   <span>{todo.text}</span>
   <div class="controls">
-    <button class="icon"><GoTrashcan /></button>
+    <button class="icon" on:click={() => archiveTodoToggle(todo.id)}><GoTrashcan /></button>
   </div>
 </li>
 

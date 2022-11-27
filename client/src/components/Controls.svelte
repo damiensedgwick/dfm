@@ -1,5 +1,7 @@
 <script>
   import CreateTodo from "./CreateTodo.svelte";
+
+  export let addTodo;
 </script>
 
 <section>
@@ -9,7 +11,7 @@
     <button>Archived</button>
   </div>
 
-  <CreateTodo />
+  <CreateTodo addTodo={addTodo} />
 </section>
 
 <style>

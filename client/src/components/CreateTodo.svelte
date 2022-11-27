@@ -1,6 +1,25 @@
-<script></script>
+<script>
+  export let addTodo;
 
-<input type="text" placeholder="Add Todo">
+  let todo = { text: "", completed: false, archived: false };
+
+  const onInput = (event) => {
+    todo.text = event.target.value;
+  };
+
+  const onKeyDown = (e) => {
+    if (e.key !== "Enter") return;
+
+    if (!todo.text.length) {
+      alert("Please enter a todo");
+    } else {
+      addTodo(todo);
+      todo.text = "";
+    }
+  };
+</script>
+
+<input type="text" placeholder="Add Todo" on:input={onInput} on:keydown={onKeyDown} bind:value={todo.text}>
 
 <style>
     input {
