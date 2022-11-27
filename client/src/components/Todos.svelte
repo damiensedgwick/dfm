@@ -6,6 +6,8 @@
 </script>
 
 <section>
+  <h2>Your To-Do's</h2>
+
   <Controls />
 
   {#if todos}
@@ -25,6 +27,11 @@
         flex-direction: column;
         align-items: center;
         padding: 1rem;
+    }
+
+    h2 {
+        width: 100%;
+        text-align: left;
     }
 
     ul {

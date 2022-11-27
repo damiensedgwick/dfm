@@ -9,7 +9,8 @@
         max-width: 400px;
         padding: 10px;
         margin-bottom: 1rem;
-        border: 1px solid #ccc;
+        border: none;
         border-radius: 1rem;
+        box-shadow: 0 1px 3px rgba(16, 24, 40, 0.1), 0 1px 2px rgba(16, 24, 40, 0.06);
     }
 </style>
