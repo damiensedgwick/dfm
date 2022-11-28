@@ -6,22 +6,22 @@ async fn get_todos() -> impl Responder {
 }
 
 #[get("/api/v1/todos/{id}")]
-async fn get_todo_by_id(id: String) -> impl Responder {
+async fn get_todo_by_id() -> impl Responder {
     HttpResponse::Ok().body("Get a todo by id")
 }
 
 #[post("/api/v1/todos")]
-async fn create_todo(req_body: String) -> impl Responder {
+async fn create_todo() -> impl Responder {
     HttpResponse::Ok().body("Create a todo")
 }
 
 #[put("/api/v1/todos/{id}")]
-async fn update_todo(req_body: String) -> impl Responder {
+async fn update_todo() -> impl Responder {
     HttpResponse::Ok().body("Update a todo")
 }
 
 #[delete("/api/v1/todos/{id}")]
-async fn delete_todo(id: String) -> impl Responder {
+async fn delete_todo() -> impl Responder {
     HttpResponse::Ok().body("Delete a todo")
 }
 
