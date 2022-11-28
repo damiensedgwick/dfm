@@ -1,4 +1,5 @@
-use actix_web::{delete, get, http::header::ContentType, post, put, App, HttpResponse, HttpServer, Responder};
+use actix_cors::Cors;
+use actix_web::{delete, get, http::header::ContentType, post, put, App, HttpResponse, HttpServer, Responder, http};
 use serde::{Deserialize, Serialize};
 use sqlx::sqlite::{SqliteConnection};
 use sqlx::Connection;
@@ -66,14 +67,25 @@ async fn delete_todo() -> impl Responder {
 #[actix_web::main]
 async fn main() -> std::io::Result<()> {
     HttpServer::new(|| {
+        let cors = Cors::default()
+            .allowed_origin("http://localhost:5173")
+            .allowed_origin_fn(|origin, _req_head| {
+                origin.as_bytes().ends_with(b".localhost:5173")
+            })
+            .allowed_methods(vec!["GET", "POST", "PUT", "DELETE"])
+            .allowed_headers(vec![http::header::AUTHORIZATION, http::header::ACCEPT])
+            .allowed_header(http::header::CONTENT_TYPE)
+            .max_age(3600);
+
         App::new()
+            .wrap(cors)
             .service(get_todos)
             .service(get_todo_by_id)
             .service(create_todo)
             .service(update_todo)
             .service(delete_todo)
     })
-    .bind(("127.0.0.1", 8080))?
-    .run()
-    .await
+        .bind(("127.0.0.1", 8080))?
+        .run()
+        .await
 }

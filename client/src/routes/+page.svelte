@@ -2,7 +2,7 @@
   import { crossfade, fade } from "svelte/transition";
   import { flip } from "svelte/animate";
   import { cubicOut } from "svelte/easing";
-  import GoTrashcan from 'svelte-icons/go/GoTrashcan.svelte'
+  import GoTrashcan from "svelte-icons/go/GoTrashcan.svelte";
   import CreateTodoInput from "../components/CreateTodoInput.svelte";
 
   const [send, receive] = crossfade({
@@ -18,26 +18,7 @@
     archived: boolean;
   }
 
-  let todos: Todo[] = [
-    {
-      id: 1,
-      title: "win a game of warzone 2.0",
-      completed: false,
-      archived: false
-    },
-    {
-      id: 2,
-      title: "buy some cheese",
-      completed: false,
-      archived: false
-    },
-    {
-      id: 3,
-      title: "actually complete a side project",
-      completed: false,
-      archived: false
-    }
-  ];
+  let todos: Todo[] = [];
   let completed: Todo[] = [];
 
   function complete(id) {
@@ -55,6 +36,12 @@
   let createTodo = (todo) => {
     todos = [...todos, { id: todos.length + 1, ...todo }];
   };
+
+  const fetchTodos = (async () => {
+    const response = await fetch('http://localhost:8080/api/v1/todos');
+
+    return todos = await response.json()
+  })()
 </script>
 
 <section>
@@ -64,27 +51,35 @@
       <CreateTodoInput createTodo={createTodo} />
     </div>
 
-    <ul>
-      {#each todos.filter(todo => !completed.includes(todo.id)).reverse() as todo (todo.id)}
-        <li animate:flip={{duration: 500, easing: cubicOut}} in:receive={{key: todo.id}} out:send={{key: todo.id}}>
-          <input type="checkbox" bind:checked={todo.completed} on:click={() => complete(todo.id)}>
-          {todo.title}
-          <button class="icon" on:click={() => archive(todo.id)}><GoTrashcan /></button>
-        </li>
-      {/each}
-    </ul>
-
-    <hr>
-
-    <ul>
-      {#each todos.filter(todo => completed.includes(todo.id)).reverse() as todo (todo.id)}
-        <li animate:flip={{duration: 500, easing: cubicOut }} in:receive={{key: todo.id}} out:send={{key: todo.id}}>
-          <input type="checkbox" bind:checked={todo.completed} on:click={() => complete(todo.id)}>
-          {todo.title}
-          <button class="icon" on:click={() => archive(todo.id)}><GoTrashcan /></button>
-        </li>
-      {/each}
-    </ul>
+    {#await fetchTodos}
+      <p>Loading...</p>
+    {:then value}
+      <ul>
+        {#each todos.filter(todo => !completed.includes(todo.id)).reverse() as todo (todo.id)}
+          <li animate:flip={{duration: 500, easing: cubicOut}} in:receive={{key: todo.id}} out:send={{key: todo.id}}>
+            <input type="checkbox" bind:checked={todo.completed} on:click={() => complete(todo.id)}>
+            {todo.title}
+            <button class="icon" on:click={() => archive(todo.id)}>
+              <GoTrashcan />
+            </button>
+          </li>
+        {/each}
+      </ul>
+      <hr>
+      <ul>
+        {#each todos.filter(todo => completed.includes(todo.id)).reverse() as todo (todo.id)}
+          <li animate:flip={{duration: 500, easing: cubicOut }} in:receive={{key: todo.id}} out:send={{key: todo.id}}>
+            <input type="checkbox" bind:checked={todo.completed} on:click={() => complete(todo.id)}>
+            {todo.title}
+            <button class="icon" on:click={() => archive(todo.id)}>
+              <GoTrashcan />
+            </button>
+          </li>
+        {/each}
+      </ul>
+    {:catch error}
+      <p>Something went wrong: {error.message}</p>
+    {/await}
   </div>
 </section>
 
