@@ -19,10 +19,6 @@ struct TodoRow {
     archived: Option<i64>,
 }
 
-fn print_type_of<T>(_: &T) {
-    println!("{}", std::any::type_name::<T>())
-}
-
 #[get("/api/v1/todos")]
 async fn get_todos() -> impl Responder {
     let mut conn = SqliteConnection::connect("sqlite:todos.db").await.unwrap();
