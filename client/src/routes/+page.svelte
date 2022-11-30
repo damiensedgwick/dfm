@@ -35,8 +35,6 @@
         'Content-Type': 'application/json'
       },
       body: JSON.stringify({ ...todo, completed: !todo.completed })
-    }).then(async (response) => {
-      console.log(await response.json())
     })
   }
 
@@ -51,8 +49,6 @@
         'Content-Type': 'application/json'
       },
       body: JSON.stringify({ ...todo })
-    }).then(async (response) => {
-      console.log(await response.json())
     })
   };
 </script>
