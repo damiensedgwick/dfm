@@ -15,6 +15,13 @@ struct Todo {
     archived: bool,
 }
 
+#[derive(Serialize, Deserialize, Debug)]
+struct NewTodo {
+    title: String,
+    completed: bool,
+    archived: bool,
+}
+
 #[derive(sqlx::FromRow)]
 struct TodoRow {
     id: i64,
@@ -77,14 +84,14 @@ async fn get_todo_by_id(path: web::Path<String>) -> impl Responder {
 }
 
 #[post("/api/v1/todos")]
-async fn create_todo(json: web::Json<Todo>) -> impl Responder {
+async fn create_todo(json: web::Json<NewTodo>) -> impl Responder {
     let mut conn = SqliteConnection::connect("sqlite:todos.db").await.unwrap();
 
     let query = sqlx::query!(
         "INSERT INTO todos (title, completed, archived) VALUES (?, ?, ?)",
         json.title,
         json.completed,
-        json.archived
+        json.archived,
     );
 
     let result = query.execute(&mut conn).await;
