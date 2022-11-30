@@ -101,13 +101,51 @@ async fn create_todo(json: web::Json<Todo>) -> impl Responder {
 }
 
 #[put("/api/v1/todos/{id}")]
-async fn update_todo() -> impl Responder {
-    HttpResponse::Ok().body("Update a todo")
+async fn update_todo(path: web::Path<String>, json: web::Json<Todo>) -> impl Responder {
+    let id = path.into_inner();
+
+    let mut conn = SqliteConnection::connect("sqlite:todos.db").await.unwrap();
+
+    let query = sqlx::query!(
+        "UPDATE todos SET title = ?, completed = ?, archived = ? WHERE id = ?",
+        json.title,
+        json.completed,
+        json.archived,
+        id
+    );
+
+    let result = query.execute(&mut conn).await;
+
+    match result {
+        Ok(_) => HttpResponse::Ok()
+            .content_type(ContentType::json())
+            .body("Todo successfully updated"),
+
+        Err(_) => HttpResponse::InternalServerError()
+            .content_type(ContentType::json())
+            .body("500: Internal Server Error"),
+    }
 }
 
 #[delete("/api/v1/todos/{id}")]
-async fn delete_todo() -> impl Responder {
-    HttpResponse::Ok().body("Delete a todo")
+async fn delete_todo(path: web::Path<String>) -> impl Responder {
+    let id = path.into_inner();
+
+    let mut conn = SqliteConnection::connect("sqlite:todos.db").await.unwrap();
+
+    let query = sqlx::query!("DELETE FROM todos WHERE id = ?", id);
+
+    let result = query.execute(&mut conn).await;
+
+    match result {
+        Ok(_) => HttpResponse::Ok()
+            .content_type(ContentType::json())
+            .body("Todo has been deleted"),
+
+        Err(_) => HttpResponse::InternalServerError()
+            .content_type(ContentType::json())
+            .body("500: Internal Server Error"),
+    }
 }
 
 #[actix_web::main]
