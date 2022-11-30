@@ -21,12 +21,25 @@
   let todos: Todo[] = [];
   let completed: Todo[] = [];
 
+  const fetchTodos = (async () => {
+    const response = await fetch('http://localhost:8080/api/v1/todos');
+
+    return todos = await response.json()
+  })()
+
   function complete(id) {
-    if (completed.includes(id)) {
-      completed = completed.filter(completedId => completedId !== id);
-    } else {
-      completed = [...completed, id];
-    }
+    const todo = todos.find(todo => todo.id === id);
+
+    fetch(`http://localhost:8080/api/v1/todos/id`, {
+      method: 'PUT',
+      headers: {
+        'Content-Type': 'application/json'
+      },
+      body: JSON.stringify({ ...todo, completed: !todo.completed })
+    }).then(async (response) => {
+      console.log(await response.json())
+    })
+
   }
 
   function archive(id) {
@@ -36,12 +49,6 @@
   let createTodo = (todo) => {
     todos = [...todos, { id: todos.length + 1, ...todo }];
   };
-
-  const fetchTodos = (async () => {
-    const response = await fetch('http://localhost:8080/api/v1/todos');
-
-    return todos = await response.json()
-  })()
 </script>
 
 <section>
@@ -55,7 +62,7 @@
       <p>Loading...</p>
     {:then value}
       <ul>
-        {#each todos.filter(todo => !completed.includes(todo.id)).reverse() as todo (todo.id)}
+        {#each todos.filter(todo => !todo.completed).reverse() as todo (todo.id)}
           <li animate:flip={{duration: 500, easing: cubicOut}} in:receive={{key: todo.id}} out:send={{key: todo.id}}>
             <input type="checkbox" bind:checked={todo.completed} on:click={() => complete(todo.id)}>
             {todo.title}
@@ -67,7 +74,7 @@
       </ul>
       <hr>
       <ul>
-        {#each todos.filter(todo => completed.includes(todo.id)).reverse() as todo (todo.id)}
+        {#each todos.filter(todo => todo.completed).reverse() as todo (todo.id)}
           <li animate:flip={{duration: 500, easing: cubicOut }} in:receive={{key: todo.id}} out:send={{key: todo.id}}>
             <input type="checkbox" bind:checked={todo.completed} on:click={() => complete(todo.id)}>
             {todo.title}

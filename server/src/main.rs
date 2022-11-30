@@ -119,14 +119,20 @@ async fn update_todo(path: web::Path<String>, json: web::Json<Todo>) -> impl Res
         json.completed,
         json.archived,
         id
-    );
+    ).execute(&mut conn).await;
 
-    let result = query.execute(&mut conn).await;
-
-    match result {
+    match query {
         Ok(_) => HttpResponse::Ok()
             .content_type(ContentType::json())
-            .body("Todo successfully updated"),
+            .body({
+                let todo = Todo {
+                    id: json.id,
+                    title: json.title.clone(),
+                    completed: json.completed,
+                    archived: json.archived,
+                };
+                serde_json::to_string(&todo).unwrap()
+            }),
 
         Err(_) => HttpResponse::InternalServerError()
             .content_type(ContentType::json())
