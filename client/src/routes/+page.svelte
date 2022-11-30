@@ -19,7 +19,6 @@
   }
 
   let todos: Todo[] = [];
-  let completed: Todo[] = [];
 
   const fetchTodos = (async () => {
     const response = await fetch('http://localhost:8080/api/v1/todos');
@@ -39,7 +38,6 @@
     }).then(async (response) => {
       console.log(await response.json())
     })
-
   }
 
   function archive(id) {
@@ -47,7 +45,15 @@
   }
 
   let createTodo = (todo) => {
-    todos = [...todos, { id: todos.length + 1, ...todo }];
+    fetch(`http://localhost:8080/api/v1/todos`, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json'
+      },
+      body: JSON.stringify({ ...todo })
+    }).then(async (response) => {
+      console.log(await response.json())
+    })
   };
 </script>
 
