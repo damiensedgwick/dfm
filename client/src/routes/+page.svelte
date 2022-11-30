@@ -34,6 +34,8 @@
       },
       body: JSON.stringify({ ...todo })
     });
+
+    todos = [...todos, todo];
   }
 
   async function complete(id) {
@@ -56,7 +58,7 @@
       headers: {
         "Content-Type": "application/json"
       },
-      body: JSON.stringify({ ...todo, completed: !todo.completed })
+      body: JSON.stringify({ ...todo, completed: !todo.archived })
     });
   }
 </script>
