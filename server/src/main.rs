@@ -58,6 +58,8 @@ async fn get_todos() -> impl Responder {
 async fn get_todo_by_id(path: web::Path<String>) -> impl Responder {
     let id = path.into_inner();
 
+    println!("{:?}", id);
+
     let mut conn = SqliteConnection::connect("sqlite:todos.db").await.unwrap();
 
     let row = sqlx::query_as!(TodoRow, "SELECT * FROM todos WHERE id =?", id)
@@ -92,20 +94,20 @@ async fn create_todo(json: web::Json<NewTodo>) -> impl Responder {
         json.title,
         json.completed,
         json.archived,
-    ).execute(&mut conn).await;
+    )
+    .execute(&mut conn)
+    .await;
 
     match query {
-        Ok(_) => HttpResponse::Ok()
-            .content_type(ContentType::json())
-            .body({
-                let todo = Todo {
-                    id: 0,
-                    title: json.title.clone(),
-                    completed: json.completed,
-                    archived: json.archived,
-                };
-                serde_json::to_string(&todo).unwrap()
-            }),
+        Ok(_) => HttpResponse::Ok().content_type(ContentType::json()).body({
+            let todo = Todo {
+                id: 0,
+                title: json.title.clone(),
+                completed: json.completed,
+                archived: json.archived,
+            };
+            serde_json::to_string(&todo).unwrap()
+        }),
 
         Err(_) => HttpResponse::InternalServerError()
             .content_type(ContentType::json())
@@ -116,30 +118,29 @@ async fn create_todo(json: web::Json<NewTodo>) -> impl Responder {
 #[put("/api/v1/todos/{id}")]
 async fn update_todo(path: web::Path<String>, json: web::Json<Todo>) -> impl Responder {
     let id = path.into_inner();
-    let todo = json.into_inner();
 
     let mut conn = SqliteConnection::connect("sqlite:todos.db").await.unwrap();
 
     let query = sqlx::query!(
         "UPDATE todos SET title = ?, completed = ?, archived = ? WHERE id = ?",
-        todo.title,
-        todo.completed,
-        todo.archived,
-        todo.id,
-    ).execute(&mut conn).await;
+        json.title,
+        json.completed,
+        json.archived,
+        id
+    )
+    .execute(&mut conn)
+    .await;
 
     match query {
-        Ok(_) => HttpResponse::Ok()
-            .content_type(ContentType::json())
-            .body({
-                let todo = Todo {
-                    id: todo.id,
-                    title: todo.title,
-                    completed: todo.completed,
-                    archived: todo.archived,
-                };
-                serde_json::to_string(&todo).unwrap()
-            }),
+        Ok(_) => HttpResponse::Ok().content_type(ContentType::json()).body({
+            let todo = Todo {
+                id: json.id,
+                title: json.title.clone(),
+                completed: json.completed,
+                archived: json.archived,
+            };
+            serde_json::to_string(&todo).unwrap()
+        }),
 
         Err(_) => HttpResponse::InternalServerError()
             .content_type(ContentType::json())

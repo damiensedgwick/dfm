@@ -21,36 +21,44 @@
   let todos: Todo[] = [];
 
   const fetchTodos = (async () => {
-    const response = await fetch('http://localhost:8080/api/v1/todos');
+    const response = await fetch("http://localhost:8080/api/v1/todos");
 
-    return todos = await response.json()
-  })()
+    return todos = await response.json();
+  })();
 
-  function complete(id) {
-    const todo = todos.find(todo => todo.id === id);
-
-    fetch(`http://localhost:8080/api/v1/todos/id`, {
-      method: 'PUT',
+  async function createTodo(todo) {
+    await fetch(`http://localhost:8080/api/v1/todos`, {
+      method: "POST",
       headers: {
-        'Content-Type': 'application/json'
-      },
-      body: JSON.stringify({ ...todo, completed: !todo.completed })
-    })
-  }
-
-  function archive(id) {
-    todos = todos.filter(todo => todo.id !== id);
-  }
-
-  let createTodo = (todo) => {
-    fetch(`http://localhost:8080/api/v1/todos`, {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json'
+        "Content-Type": "application/json"
       },
       body: JSON.stringify({ ...todo })
-    })
-  };
+    });
+  }
+
+  async function complete(id) {
+    const todo = todos.find(todo => todo.id === id);
+
+    await fetch(`http://localhost:8080/api/v1/todos/${id}`, {
+      method: "PUT",
+      headers: {
+        "Content-Type": "application/json"
+      },
+      body: JSON.stringify({ ...todo, completed: !todo.completed })
+    });
+  }
+
+  async function archive(id) {
+    const todo = todos.find(todo => todo.id === id);
+
+    await fetch(`http://localhost:8080/api/v1/todos/id`, {
+      method: "PUT",
+      headers: {
+        "Content-Type": "application/json"
+      },
+      body: JSON.stringify({ ...todo, completed: !todo.completed })
+    });
+  }
 </script>
 
 <section>
