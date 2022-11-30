@@ -72,13 +72,32 @@ async fn get_todo_by_id(path: web::Path<String>) -> impl Responder {
 
         Err(_) => HttpResponse::NotFound()
             .content_type(ContentType::json())
-            .body("404: Todo not found")
+            .body("404: Todo not found"),
     }
 }
 
 #[post("/api/v1/todos")]
-async fn create_todo() -> impl Responder {
-    HttpResponse::Ok().body("Create a todo")
+async fn create_todo(json: web::Json<Todo>) -> impl Responder {
+    let mut conn = SqliteConnection::connect("sqlite:todos.db").await.unwrap();
+
+    let query = sqlx::query!(
+        "INSERT INTO todos (title, completed, archived) VALUES (?, ?, ?)",
+        json.title,
+        json.completed,
+        json.archived
+    );
+
+    let result = query.execute(&mut conn).await;
+
+    match result {
+        Ok(_) => HttpResponse::Ok()
+            .content_type(ContentType::json())
+            .body("Todo created"),
+
+        Err(_) => HttpResponse::InternalServerError()
+            .content_type(ContentType::json())
+            .body("500: Internal Server Error"),
+    }
 }
 
 #[put("/api/v1/todos/{id}")]
