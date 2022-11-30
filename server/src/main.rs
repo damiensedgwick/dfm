@@ -53,29 +53,26 @@ async fn get_todo_by_id(path: web::Path<String>) -> impl Responder {
 
     let mut conn = SqliteConnection::connect("sqlite:todos.db").await.unwrap();
 
-    let rows = sqlx::query_as!(TodoRow, "SELECT * FROM todos WHERE id =?", id)
-        .fetch_all(&mut conn)
-        .await
-        .unwrap();
+    let row = sqlx::query_as!(TodoRow, "SELECT * FROM todos WHERE id =?", id)
+        .fetch_one(&mut conn)
+        .await;
 
-    let todos = rows
-        .into_iter()
-        .map(|row| Todo {
-            id: row.id,
-            title: row.title.clone(),
-            completed: row.completed.unwrap_or(0) == 1,
-            archived: row.archived.unwrap_or(0) == 1,
-        })
-        .collect::<Vec<Todo>>();
+    match row {
+        Ok(row) => {
+            let todo = Todo {
+                id: row.id,
+                title: row.title.clone(),
+                completed: row.completed.unwrap_or(0) == 1,
+                archived: row.archived.unwrap_or(0) == 1,
+            };
+            HttpResponse::Ok()
+                .content_type(ContentType::json())
+                .body(serde_json::to_string(&todo).unwrap())
+        }
 
-    if !todos.is_empty() {
-        HttpResponse::Ok()
+        Err(_) => HttpResponse::NotFound()
             .content_type(ContentType::json())
-            .body(serde_json::to_string(&todos).unwrap())
-    } else {
-        HttpResponse::NotFound()
-            .content_type(ContentType::json())
-            .body("Unable to find todo")
+            .body("404: Todo not found")
     }
 }
 
