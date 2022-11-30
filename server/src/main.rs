@@ -92,11 +92,9 @@ async fn create_todo(json: web::Json<NewTodo>) -> impl Responder {
         json.title,
         json.completed,
         json.archived,
-    );
+    ).execute(&mut conn).await;
 
-    let result = query.execute(&mut conn).await;
-
-    match result {
+    match query {
         Ok(_) => HttpResponse::Ok()
             .content_type(ContentType::json())
             .body("Todo created"),
