@@ -66,7 +66,6 @@
 <section>
   <div>
     <div>
-      <h1>Your To-Dos</h1>
       <CreateTodoInput createTodo={createTodo} />
     </div>
 
