@@ -75,14 +75,17 @@
   }
 
   let viewArchived = false;
+
+  function toggleArchived() {
+    viewArchived = !viewArchived;
+  }
 </script>
 
 <section>
   <div>
     <div>
       <CreateTodoInput createTodo={createTodo} />
-      <button on:click={() => viewArchived = !viewArchived}>View Archived
-      </button>
+      <button on:click={toggleArchived}>View Archived</button>
     </div>
 
     {#await fetchTodos}
@@ -118,7 +121,8 @@
 </section>
 
 {#if viewArchived}
-  <ArchivedTodos todos={todos.filter((todo) => todo.archived)} archiveTodo={archiveTodo} deleteTodo={deleteTodo} />
+  <ArchivedTodos todos={todos.filter((todo) => todo.archived)} archiveTodo={archiveTodo} deleteTodo={deleteTodo}
+                 toggleArchived={toggleArchived} />
 {/if}
 
 <style>
@@ -161,6 +165,22 @@
         div > div {
             flex-direction: row;
         }
+    }
+
+    button {
+        background: #fff;
+        border: 1px solid #e2e8f0;
+        border-radius: 12px;
+        padding: 10px 20px;
+        font-size: 14px;
+        font-weight: 400;
+        cursor: pointer;
+        box-shadow: 0 25px 50px -12px rgb(0 0 0 / 0.25);
+        opacity: 0.75;
+    }
+
+    button:hover {
+        opacity: 1;
     }
 
     ul {
