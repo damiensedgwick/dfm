@@ -4,7 +4,7 @@
   import { cubicOut } from "svelte/easing";
   import GoTrashcan from "svelte-icons/go/GoTrashcan.svelte";
   import GoArchive from "svelte-icons/go/GoArchive.svelte";
-  import GoPencil from 'svelte-icons/go/GoPencil.svelte'
+  import GoPencil from "svelte-icons/go/GoPencil.svelte";
   import CreateTodoInput from "../components/CreateTodoInput.svelte";
 
   const [send, receive] = crossfade({
@@ -14,7 +14,7 @@
   });
 
   type Todo = {
-    id: number;
+    id?: number;
     title: string;
     completed: boolean;
     archived: boolean;
@@ -29,6 +29,10 @@
   })();
 
   async function createTodo(todo) {
+    todos = [
+      ...todos, {...todo}
+    ];
+
     await fetch(`http://localhost:8080/api/v1/todos`, {
       method: "POST",
       headers: {
@@ -37,7 +41,6 @@
       body: JSON.stringify({ ...todo })
     });
 
-    todos = [...todos, todo];
   }
 
   async function completeTodo(id) {
