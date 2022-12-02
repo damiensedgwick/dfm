@@ -160,7 +160,7 @@
     div {
         width: 100%;
         max-width: 960px;
-        margin-bottom: 12px;
+        margin-bottom: 18px;
     }
 
     div > div {
