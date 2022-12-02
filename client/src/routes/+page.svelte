@@ -4,6 +4,7 @@
   import { cubicOut } from "svelte/easing";
   import CreateTodoInput from "../components/CreateTodoInput.svelte";
   import TodoControls from "../components/TodoControls.svelte";
+  import ArchivedTodos from "../components/ArchivedTodos.svelte";
 
   const [send, receive] = crossfade({
     duration: d => Math.sqrt(d * 350),
@@ -72,12 +73,16 @@
 
     todos = todos.filter(todo => todo.id !== id);
   }
+
+  let viewArchived = false;
 </script>
 
 <section>
   <div>
     <div>
       <CreateTodoInput createTodo={createTodo} />
+      <button on:click={() => viewArchived = !viewArchived}>View Archived
+      </button>
     </div>
 
     {#await fetchTodos}
@@ -111,6 +116,10 @@
     {/await}
   </div>
 </section>
+
+{#if viewArchived}
+  <ArchivedTodos todos={todos.filter((todo) => todo.archived)} archiveTodo={archiveTodo} deleteTodo={deleteTodo} />
+{/if}
 
 <style>
     :global(*) {
