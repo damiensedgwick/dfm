@@ -3,6 +3,8 @@
   import { flip } from "svelte/animate";
   import { cubicOut } from "svelte/easing";
   import GoTrashcan from "svelte-icons/go/GoTrashcan.svelte";
+  import GoArchive from "svelte-icons/go/GoArchive.svelte";
+  import GoPencil from 'svelte-icons/go/GoPencil.svelte'
   import CreateTodoInput from "../components/CreateTodoInput.svelte";
 
   const [send, receive] = crossfade({
@@ -38,7 +40,7 @@
     todos = [...todos, todo];
   }
 
-  async function complete(id) {
+  async function completeTodo(id) {
     const todo = todos.find(todo => todo.id === id);
 
     await fetch(`http://localhost:8080/api/v1/todos/${id}`, {
@@ -50,7 +52,7 @@
     });
   }
 
-  async function archive(id) {
+  async function archiveTodo(id) {
     const todo = todos.find(todo => todo.id === id);
 
     await fetch(`http://localhost:8080/api/v1/todos/id`, {
@@ -58,8 +60,16 @@
       headers: {
         "Content-Type": "application/json"
       },
-      body: JSON.stringify({ ...todo, completed: !todo.archived })
+      body: JSON.stringify({ ...todo, archived: !todo.archived })
     });
+  }
+
+  async function deleteTodo(id) {
+    await fetch(`http://localhost:8080/api/v1/todos/${id}`, {
+      method: "DELETE"
+    });
+
+    todos = todos.filter(todo => todo.id !== id);
   }
 </script>
 
@@ -73,25 +83,45 @@
       <p>Loading...</p>
     {:then value}
       <ul>
-        {#each todos.filter(todo => !todo.completed).reverse() as todo (todo.id)}
+        {#each todos.filter(todo => !todo.completed && !todo.archived).reverse() as todo (todo.id)}
           <li animate:flip={{duration: 500, easing: cubicOut}} in:receive={{key: todo.id}} out:send={{key: todo.id}}>
-            <input type="checkbox" bind:checked={todo.completed} on:click={() => complete(todo.id)}>
-            {todo.title}
-            <button class="icon" on:click={() => archive(todo.id)}>
-              <GoTrashcan />
-            </button>
+            <div>
+              <input type="checkbox" bind:checked={todo.completed} on:click={() => completeTodo(todo.id)}>
+              {todo.title}
+            </div>
+            <div>
+              <button class="icon" on:click={() => archiveTodo(todo.id)}>
+                <GoPencil />
+              </button>
+              <button class="icon" on:click={() => archiveTodo(todo.id)}>
+                <GoArchive />
+              </button>
+              <button class="icon" on:click={() => deleteTodo(todo.id)}>
+                <GoTrashcan />
+              </button>
+            </div>
           </li>
         {/each}
       </ul>
       <hr>
       <ul>
-        {#each todos.filter(todo => todo.completed).reverse() as todo (todo.id)}
+        {#each todos.filter(todo => todo.completed && !todo.archived).reverse() as todo (todo.id)}
           <li animate:flip={{duration: 500, easing: cubicOut }} in:receive={{key: todo.id}} out:send={{key: todo.id}}>
-            <input type="checkbox" bind:checked={todo.completed} on:click={() => complete(todo.id)}>
-            {todo.title}
-            <button class="icon" on:click={() => archive(todo.id)}>
-              <GoTrashcan />
-            </button>
+            <div>
+              <input type="checkbox" bind:checked={todo.completed} on:click={() => completeTodo(todo.id)}>
+              {todo.title}
+            </div>
+            <div>
+              <button class="icon" on:click={() => archiveTodo(todo.id)}>
+                <GoPencil />
+              </button>
+              <button class="icon" on:click={() => archiveTodo(todo.id)}>
+                <GoArchive />
+              </button>
+              <button class="icon" on:click={() => deleteTodo(todo.id)}>
+                <GoTrashcan />
+              </button>
+            </div>
           </li>
         {/each}
       </ul>
@@ -143,17 +173,6 @@
         }
     }
 
-    h1 {
-        margin-bottom: 12px;
-        font-weight: 300;
-    }
-
-    @media screen and (min-width: 768px) {
-        h1 {
-            margin-bottom: 0;
-        }
-    }
-
     ul {
         padding: 0;
         list-style: none;
@@ -164,6 +183,7 @@
         padding: 12px;
         display: flex;
         align-items: center;
+        justify-content: space-between;
         background: white;
         border-radius: 12px;
         box-shadow: 0 25px 50px -12px rgb(0 0 0 / 0.25);
@@ -175,9 +195,24 @@
         accent-color: #059669;
     }
 
-    li > input:checked {
+    input:checked {
         border: 1px solid #059669;
         box-shadow: 0 0 5px #059669;
+    }
+
+    li > div:first-of-type {
+        margin: 0;
+        display: flex;
+        flex: 1;
+        align-items: center;
+    }
+
+    li > div:last-of-type {
+        width: 100px;
+        margin: 0;
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
     }
 
     hr {
