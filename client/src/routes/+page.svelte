@@ -58,7 +58,7 @@
   async function archiveTodo(id) {
     const todo = todos.find(todo => todo.id === id);
 
-    await fetch(`http://localhost:8080/api/v1/todos/id`, {
+    await fetch(`http://localhost:8080/api/v1/todos/${id}`, {
       method: "PUT",
       headers: {
         "Content-Type": "application/json"
