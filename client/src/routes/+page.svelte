@@ -2,10 +2,8 @@
   import { crossfade, fade } from "svelte/transition";
   import { flip } from "svelte/animate";
   import { cubicOut } from "svelte/easing";
-  import GoTrashcan from "svelte-icons/go/GoTrashcan.svelte";
-  import GoArchive from "svelte-icons/go/GoArchive.svelte";
-  import GoPencil from "svelte-icons/go/GoPencil.svelte";
   import CreateTodoInput from "../components/CreateTodoInput.svelte";
+  import TodoControls from "../components/TodoControls.svelte";
 
   const [send, receive] = crossfade({
     duration: d => Math.sqrt(d * 350),
@@ -30,7 +28,7 @@
 
   async function createTodo(todo) {
     todos = [
-      ...todos, {...todo}
+      ...todos, { ...todo }
     ];
 
     await fetch(`http://localhost:8080/api/v1/todos`, {
@@ -92,17 +90,7 @@
               <input type="checkbox" bind:checked={todo.completed} on:click={() => completeTodo(todo.id)}>
               {todo.title}
             </div>
-            <div>
-              <button class="icon" on:click={() => archiveTodo(todo.id)}>
-                <GoPencil />
-              </button>
-              <button class="icon" on:click={() => archiveTodo(todo.id)}>
-                <GoArchive />
-              </button>
-              <button class="icon" on:click={() => deleteTodo(todo.id)}>
-                <GoTrashcan />
-              </button>
-            </div>
+            <TodoControls todo={todo} archiveTodo={archiveTodo} deleteTodo={deleteTodo} />
           </li>
         {/each}
       </ul>
@@ -114,17 +102,7 @@
               <input type="checkbox" bind:checked={todo.completed} on:click={() => completeTodo(todo.id)}>
               {todo.title}
             </div>
-            <div>
-              <button class="icon" on:click={() => archiveTodo(todo.id)}>
-                <GoPencil />
-              </button>
-              <button class="icon" on:click={() => archiveTodo(todo.id)}>
-                <GoArchive />
-              </button>
-              <button class="icon" on:click={() => deleteTodo(todo.id)}>
-                <GoTrashcan />
-              </button>
-            </div>
+            <TodoControls todo={todo} archiveTodo={archiveTodo} deleteTodo={deleteTodo} />
           </li>
         {/each}
       </ul>
@@ -210,27 +188,9 @@
         align-items: center;
     }
 
-    li > div:last-of-type {
-        width: 100px;
-        margin: 0;
-        display: flex;
-        align-items: center;
-        justify-content: space-between;
-    }
-
     hr {
         margin: 20px 0;
         border: 0;
         border-bottom: 2px solid #cbd5e1;
-    }
-
-    .icon {
-        height: 16px;
-        width: 16px;
-        color: #dc2626;
-        margin-left: auto;
-        background: none;
-        border: none;
-        cursor: pointer;
     }
 </style>
