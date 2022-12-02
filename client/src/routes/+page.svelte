@@ -39,7 +39,6 @@
       },
       body: JSON.stringify({ ...todo })
     });
-
   }
 
   async function completeTodo(id) {
