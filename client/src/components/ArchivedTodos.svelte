@@ -11,14 +11,18 @@
 <section>
   <Drawer {open} size='250px' placement='bottom' on:clickAway={toggleArchived}>
     <div>
-      <ul>
-        {#each todos.reverse() as todo (todo.id)}
-          <li>
-            {todo.title}
-            <TodoControls todo={todo} archiveTodo={archiveTodo} deleteTodo={deleteTodo} />
-          </li>
-        {/each}
-      </ul>
+      {#if todos.length}
+        <ul>
+          {#each todos.reverse() as todo (todo.id)}
+            <li>
+              {todo.title}
+              <TodoControls todo={todo} archiveTodo={archiveTodo} deleteTodo={deleteTodo} />
+            </li>
+          {/each}
+        </ul>
+      {:else}
+        <p>Nothing to see here!</p>
+      {/if}
     </div>
   </Drawer>
 </section>
@@ -45,5 +49,10 @@
         background: white;
         border-radius: 12px;
         box-shadow: 0 25px 50px -12px rgb(0 0 0 / 0.25);
+    }
+
+    p {
+        text-align: center;
+        padding-top: 12px;
     }
 </style>
