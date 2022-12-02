@@ -24,11 +24,22 @@
     .icon {
         height: 16px;
         width: 16px;
-        color: #dc2626;
         margin-left: auto;
         background: none;
         border: none;
         cursor: pointer;
+    }
+
+    .icon:nth-of-type(1) {
+         color: #059669;
+    }
+
+    .icon:nth-of-type(2) {
+        color: #475569;
+    }
+
+    .icon:nth-of-type(3) {
+        color: #dc2626;
     }
 
     div {
